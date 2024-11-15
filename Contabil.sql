@@ -4,9 +4,12 @@ USE CONTABIL;
 CREATE TABLE Empresa_Cliente (
     cnpj VARCHAR(18) PRIMARY KEY,
     razao_social VARCHAR(255),
-    endereco VARCHAR(255),
     telefone VARCHAR(15),
-    email VARCHAR(100)
+    telefone2 VARCHAR(15),
+    email VARCHAR(100),
+    rua VARCHAR(255),
+    numero VARCHAR(10),
+    municipio VARCHAR(100)
 );
 
 CREATE TABLE Guia_de_Pagamento (
@@ -60,8 +63,11 @@ CREATE TABLE Funcionario (
     nome VARCHAR(100),
     departamento VARCHAR(50),
     telefone VARCHAR(15),
-    email VARCHAR(100)
+    email VARCHAR(100),
+    cpf_gerente VARCHAR(11),
+    CONSTRAINT FK_Funcionario_Gerente FOREIGN KEY (cpf_gerente) REFERENCES Funcionario (cpf)
 );
+
 
 CREATE TABLE Simples_Nacional (
     tipo_de_calculo VARCHAR(50),
