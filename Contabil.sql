@@ -115,6 +115,50 @@ CREATE TABLE apura (
     REFERENCES Imposto (cod_imposto)
 );
 
+-- Simples Nacional - Comércio
+INSERT INTO Imposto (cod_imposto, tipo, aliquota, base_de_calculo) VALUES ('SN_COMM_FAIXA1', 'Simples Nacional - Comércio', 0.04, 0);
+INSERT INTO Imposto (cod_imposto, tipo, aliquota, base_de_calculo) VALUES ('SN_COMM_FAIXA2', 'Simples Nacional - Comércio', 0.073, 5940);
+INSERT INTO Imposto (cod_imposto, tipo, aliquota, base_de_calculo) VALUES ('SN_COMM_FAIXA3', 'Simples Nacional - Comércio', 0.095, 13860);
+INSERT INTO Imposto (cod_imposto, tipo, aliquota, base_de_calculo) VALUES ('SN_COMM_FAIXA4', 'Simples Nacional - Comércio', 0.107, 22500);
+INSERT INTO Imposto (cod_imposto, tipo, aliquota, base_de_calculo) VALUES ('SN_COMM_FAIXA5', 'Simples Nacional - Comércio', 0.143, 87300);
+INSERT INTO Imposto (cod_imposto, tipo, aliquota, base_de_calculo) VALUES ('SN_COMM_FAIXA6', 'Simples Nacional - Comércio', 0.19, 378000);
+
+-- Simples Nacional - Serviço
+INSERT INTO Imposto (cod_imposto, tipo, aliquota, base_de_calculo) VALUES ('SN_SERV_FAIXA1', 'Simples Nacional - Serviço', 0.06, 0);
+INSERT INTO Imposto (cod_imposto, tipo, aliquota, base_de_calculo) VALUES ('SN_SERV_FAIXA2', 'Simples Nacional - Serviço', 0.112, 9360);
+INSERT INTO Imposto (cod_imposto, tipo, aliquota, base_de_calculo) VALUES ('SN_SERV_FAIXA3', 'Simples Nacional - Serviço', 0.135, 17640);
+INSERT INTO Imposto (cod_imposto, tipo, aliquota, base_de_calculo) VALUES ('SN_SERV_FAIXA4', 'Simples Nacional - Serviço', 0.16, 35640);
+INSERT INTO Imposto (cod_imposto, tipo, aliquota, base_de_calculo) VALUES ('SN_SERV_FAIXA5', 'Simples Nacional - Serviço', 0.21, 125640);
+INSERT INTO Imposto (cod_imposto, tipo, aliquota, base_de_calculo) VALUES ('SN_SERV_FAIXA6', 'Simples Nacional - Serviço', 0.33, 648000);
+
+-- Lucro Presumido - Serviço
+INSERT INTO Imposto (cod_imposto, tipo, aliquota, base_de_calculo) VALUES ('LP_SERV_ISS', 'ISS', 0.05, 0);
+INSERT INTO Imposto (cod_imposto, tipo, aliquota, base_de_calculo) VALUES ('LP_SERV_PIS', 'PIS', 0.0065, 0);
+INSERT INTO Imposto (cod_imposto, tipo, aliquota, base_de_calculo) VALUES ('LP_SERV_COFINS', 'COFINS', 0.03, 0);
+INSERT INTO Imposto (cod_imposto, tipo, aliquota, base_de_calculo) VALUES ('LP_SERV_CSLL', 'CSLL', 0.09, 0);
+INSERT INTO Imposto (cod_imposto, tipo, aliquota, base_de_calculo) VALUES ('LP_SERV_IR', 'IR', 0.15, 0);
+
+-- Lucro Presumido - Comércio
+INSERT INTO Imposto (cod_imposto, tipo, aliquota, base_de_calculo) VALUES ('LP_COMM_ICMS', 'ICMS', 0.205, 0);
+INSERT INTO Imposto (cod_imposto, tipo, aliquota, base_de_calculo) VALUES ('LP_COMM_PIS', 'PIS', 0.0065, 0);
+INSERT INTO Imposto (cod_imposto, tipo, aliquota, base_de_calculo) VALUES ('LP_COMM_COFINS', 'COFINS', 0.03, 0);
+INSERT INTO Imposto (cod_imposto, tipo, aliquota, base_de_calculo) VALUES ('LP_COMM_CSLL', 'CSLL', 0.09, 0);
+INSERT INTO Imposto (cod_imposto, tipo, aliquota, base_de_calculo) VALUES ('LP_COMM_IR', 'IR', 0.15, 0);
+
+-- Lucro Real - Serviço
+INSERT INTO Imposto (cod_imposto, tipo, aliquota, base_de_calculo) VALUES ('LR_SERV_ISS', 'ISS', 0.05, 0);
+INSERT INTO Imposto (cod_imposto, tipo, aliquota, base_de_calculo) VALUES ('LR_SERV_PIS', 'PIS', 0.03, 0);
+INSERT INTO Imposto (cod_imposto, tipo, aliquota, base_de_calculo) VALUES ('LR_SERV_COFINS', 'COFINS', 0.076, 0);
+INSERT INTO Imposto (cod_imposto, tipo, aliquota, base_de_calculo) VALUES ('LR_SERV_CSLL', 'CSLL', 0.09, 0);
+INSERT INTO Imposto (cod_imposto, tipo, aliquota, base_de_calculo) VALUES ('LR_SERV_IR', 'IR', 0.15, 0);
+
+-- Lucro Real - Comércio
+INSERT INTO Imposto (cod_imposto, tipo, aliquota, base_de_calculo) VALUES ('LR_COMM_ICMS', 'ICMS', 0.205, 0);
+INSERT INTO Imposto (cod_imposto, tipo, aliquota, base_de_calculo) VALUES ('LR_COMM_PIS', 'PIS', 0.03, 0);
+INSERT INTO Imposto (cod_imposto, tipo, aliquota, base_de_calculo) VALUES ('LR_COMM_COFINS', 'COFINS', 0.076, 0);
+INSERT INTO Imposto (cod_imposto, tipo, aliquota, base_de_calculo) VALUES ('LR_COMM_CSLL', 'CSLL', 0.09, 0);
+INSERT INTO Imposto (cod_imposto, tipo, aliquota, base_de_calculo) VALUES ('LR_COMM_IR', 'IR', 0.15, 0);
+
 DELIMITER //
 
 CREATE FUNCTION calcular_imposto_simples_nacional(faturamento DECIMAL(15, 2), categoria VARCHAR(20))
@@ -173,4 +217,83 @@ BEGIN
 END //
 
 DELIMITER ;
+
+DELIMITER //
+
+CREATE FUNCTION calcular_imposto_lucro_presumido(
+    receita_bruta DECIMAL(15, 2),
+    categoria VARCHAR(20)
+)
+RETURNS DECIMAL(15, 2)
+DETERMINISTIC
+BEGIN
+    DECLARE imposto_total DECIMAL(15, 2);
+    DECLARE aliquota_ICMS DECIMAL(5, 2);
+    DECLARE aliquota_ISS DECIMAL(5, 2);
+    DECLARE aliquota_PIS DECIMAL(5, 2) DEFAULT 0.0065;
+    DECLARE aliquota_COFINS DECIMAL(5, 2) DEFAULT 0.03;
+    DECLARE aliquota_CSLL DECIMAL(5, 2) DEFAULT 0.09;
+    DECLARE aliquota_IR DECIMAL(5, 2) DEFAULT 0.15;
+
+    IF categoria = 'Serviço' THEN
+        SET aliquota_ISS = 0.05;
+        SET aliquota_ICMS = 0;
+    ELSEIF categoria = 'Comércio' THEN
+        SET aliquota_ICMS = 0.205;
+        SET aliquota_ISS = 0;
+    END IF;
+
+    SET imposto_total = 
+        (receita_bruta * IFNULL(aliquota_ISS, 0)) +
+        (receita_bruta * IFNULL(aliquota_ICMS, 0)) +
+        (receita_bruta * aliquota_PIS) +
+        (receita_bruta * aliquota_COFINS) +
+        (receita_bruta * aliquota_CSLL) +
+        (receita_bruta * aliquota_IR);
+
+    RETURN imposto_total;
+END;
+//
+
+DELIMITER ;
+
+DELIMITER //
+
+CREATE FUNCTION calcular_imposto_lucro_real(
+    receita_bruta DECIMAL(15, 2),
+    categoria VARCHAR(20)
+)
+RETURNS DECIMAL(15, 2)
+DETERMINISTIC
+BEGIN
+    DECLARE imposto_total DECIMAL(15, 2);
+    DECLARE aliquota_ICMS DECIMAL(5, 2);
+    DECLARE aliquota_ISS DECIMAL(5, 2);
+    DECLARE aliquota_PIS DECIMAL(5, 2) DEFAULT 0.03;
+    DECLARE aliquota_COFINS DECIMAL(5, 2) DEFAULT 0.076;
+    DECLARE aliquota_CSLL DECIMAL(5, 2) DEFAULT 0.09;
+    DECLARE aliquota_IR DECIMAL(5, 2) DEFAULT 0.15;
+
+    IF categoria = 'Serviço' THEN
+        SET aliquota_ISS = 0.05;
+        SET aliquota_ICMS = 0;
+    ELSEIF categoria = 'Comércio' THEN
+        SET aliquota_ICMS = 0.205;
+        SET aliquota_ISS = 0;
+    END IF;
+
+    SET imposto_total = 
+        (receita_bruta * IFNULL(aliquota_ISS, 0)) +
+        (receita_bruta * IFNULL(aliquota_ICMS, 0)) +
+        (receita_bruta * aliquota_PIS) +
+        (receita_bruta * aliquota_COFINS) +
+        (receita_bruta * aliquota_CSLL) +
+        (receita_bruta * aliquota_IR);
+
+    RETURN imposto_total;
+END;
+//
+
+DELIMITER ;
+
 
